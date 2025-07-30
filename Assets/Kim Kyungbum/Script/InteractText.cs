@@ -3,8 +3,13 @@ using TMPro;
 
 public class InteractText : MonoBehaviour
 {
+    [SerializeField]
+    private CharacterController characterController;
+    [SerializeField]
+    public Transform spawnPoint;
     public TextMeshProUGUI promptText;
     private ObjDestroy targetDestroyScript;
+    public Transform player;
 
     public float PromptAlpha
     {
@@ -50,10 +55,30 @@ public class InteractText : MonoBehaviour
             {
                 targetDestroyScript.destroyObject();
             }
-            else if (name == "TextPlay")
-            {
-                targetDestroyScript.teleport();
-            }
+        }
+    }
+    void OnTriggerStay(Collider other)
+    {
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            teleportPlayer();
+        }
+    }
+
+    void teleportPlayer()
+    {
+        if (characterController != null)
+        {
+            characterController.enabled = false;
+        }
+
+        PromptAlpha = 0.0f;
+        player.position = spawnPoint.position;
+        Debug.Log("순간이동됨");
+
+        if (characterController != null)
+        {
+            characterController.enabled = true;
         }
     }
 }

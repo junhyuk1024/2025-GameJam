@@ -6,6 +6,7 @@ TagManager:
   tags:
   - TextPickup
   - TextPlay
+  - FirstPotal
   layers:
   - Default
   - TransparentFX

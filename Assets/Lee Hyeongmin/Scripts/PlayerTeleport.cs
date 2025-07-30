@@ -5,9 +5,11 @@ public class PlayerTeleport : MonoBehaviour
 {
     public Transform arrivalPoint;
 
+    private bool isUsed;
+
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.layer == 6)
+        if (other.gameObject.layer == 6 && !isUsed)
         {
             print("Æ÷Å»ÀÌµ¿");
             CharacterController characterController = other.GetComponent<CharacterController>();
@@ -16,6 +18,7 @@ public class PlayerTeleport : MonoBehaviour
             //other.transform.rotation = arrivalPoint.rotation;
             other.transform.rotation = Quaternion.LookRotation(arrivalPoint.forward, Vector3.up);
             characterController.enabled = true;
+            isUsed = true;
         }
     }
 

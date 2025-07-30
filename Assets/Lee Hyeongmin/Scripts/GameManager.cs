@@ -17,10 +17,14 @@ public class GameManager : BaseSingleton<GameManager>
         {
             currentAnimals.Peek().gameObject.SetActive(false);
             currentAnimals.Pop();
+            if (currentAnimals.Count <= 0)
+            {
+                print("게임오버");
+            }
         }
         else
         {
-            print("패배");
+            print("게임오버상태");
         }
     }
 
@@ -31,13 +35,13 @@ public class GameManager : BaseSingleton<GameManager>
         currentAnimals = new Stack<GameObject>();
     }
 
-    private void Update()
-    {
-        print(currentAnimals.Count);
+    //private void Update()
+    //{
+    //    print(currentAnimals.Count);
 
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            PopStack();
-        }
-    }
+    //    if (Input.GetKeyDown(KeyCode.E))
+    //    {
+    //        PopStack();
+    //    }
+    //}
 }

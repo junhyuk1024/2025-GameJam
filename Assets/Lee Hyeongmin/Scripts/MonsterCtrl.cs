@@ -163,7 +163,7 @@ public class MonsterCtrl : MonoBehaviour
         patrolTimer += Time.deltaTime;
         if (patrolTimer > patrolDelay)
         {
-            navMeshAgent.SetDestination(GetRandomPointOnNavMesh(transform.position, 10, NavMesh.AllAreas));
+            navMeshAgent.SetDestination(Utility.GetRandomPointOnNavMesh(transform.position, 10, NavMesh.AllAreas));
             patrolTimer = 0f;
         }
     }
@@ -228,16 +228,16 @@ public class MonsterCtrl : MonoBehaviour
         }
     }
 
-    public Vector3 GetRandomPointOnNavMesh(Vector3 center, float distance, int areaMask)
-    {
-        var randomPos = Random.insideUnitSphere * distance + center;
+    //public Vector3 GetRandomPointOnNavMesh(Vector3 center, float distance, int areaMask)
+    //{
+    //    var randomPos = Random.insideUnitSphere * distance + center;
 
-        NavMeshHit hit;
+    //    NavMeshHit hit;
 
-        NavMesh.SamplePosition(randomPos, out hit, distance, areaMask);
+    //    NavMesh.SamplePosition(randomPos, out hit, distance, areaMask);
 
-        return hit.position;
-    }
+    //    return hit.position;
+    //}
 
     public float gizmoRadius = 10f;
     public float gizmoDistance = 10f;

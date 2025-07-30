@@ -6,6 +6,7 @@ public class PlayerMovement2 : MonoBehaviour
     public float playerSpeed = 3f;
     public float playerRotSpeed = 0.25f;
     public Transform playerEyes;
+    public AudioClip[] footsteps;
 
     private CharacterController characterController;
     private PlayerInput playerInput;
@@ -13,17 +14,20 @@ public class PlayerMovement2 : MonoBehaviour
     private float yaw = 0f;
     private float gravity = -9.81f;
     private Vector3 velocity;
+    private float footstepDelay = 0;
 
     private void Awake()
     {
         characterController = GetComponent<CharacterController>();
-        playerInput = GetComponent<PlayerInput>();        
+        playerInput = GetComponent<PlayerInput>();
+
     }
 
     private void Update()
     {
         Move(playerInput.movementInput);
         Rotate(playerInput.lookInput);
+        PlayFootstepSound(playerInput.movementInput);
     }
 
     private void Move(Vector2 movementInput) // movementInput <- w를 누르면 0,1 a를 누르면 -1,0 s를 누르면 0,-1 d를 누르면 1,0
@@ -54,5 +58,24 @@ public class PlayerMovement2 : MonoBehaviour
 
         //transform.rotation = Quaternion.Euler(pitch, yaw, 0f);
         playerEyes.rotation = Quaternion.Euler(pitch, yaw, 0f);
+    }
+
+    private void PlayFootstepSound(Vector2 movementInput)
+    {
+        if (movementInput.sqrMagnitude > 0f)
+        {
+            footstepDelay += Time.deltaTime;
+        }
+        else
+        {
+            footstepDelay = 0f;
+        }
+
+        if (footstepDelay > 0.4f)
+        {
+            int randomValue = Random.Range(0, 3);
+            AudioManager.Instance.PlayOneSound(footsteps[randomValue]);
+            footstepDelay = 0f;
+        }
     }
 }

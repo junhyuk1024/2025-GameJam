@@ -22,6 +22,10 @@ public class MonsterCtrl : MonoBehaviour
     public float viewDistance;
     public float viewAngle;
 
+    // 몬스터 소리
+    public AudioClip patrolSound;
+    public AudioClip findingSound;
+
     private NavMeshAgent navMeshAgent;
     private Animator animator;
     private bool hasTarget;
@@ -35,6 +39,10 @@ public class MonsterCtrl : MonoBehaviour
     private bool isMovingToCarpet = false;      // 소리 위치로 이동 중 여부
     private Vector3 targetCarpetPos;            // 이동할 카펫 위치
     private float carpetArriveThreshold = 0.75f; // 도착 판정 최소 거리
+
+    // 몬스터 소리 딜레이
+    private float patrolSoundDelay = 0;
+    private bool findingSoundDelay = false;
 
     private void Awake()
     {
@@ -61,12 +69,16 @@ public class MonsterCtrl : MonoBehaviour
             targetEyes.LookAt(transform.position + Vector3.up * 1.5f);
 
             StartCoroutine(AfterAttack());
+
+            state = State.Patrol;
+
+            navMeshAgent.enabled = true;
         }
     }
 
     private IEnumerator AfterAttack()
     {
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(0.65f);
 
         Vector3 playerSpawnPoint = new Vector3(-7f, 2f, 7f);
         target.position = playerSpawnPoint;
@@ -81,6 +93,8 @@ public class MonsterCtrl : MonoBehaviour
 
     private void Update()
     {
+        PlayMonsterSound(Vector3.Distance(transform.position, target.position));
+
         if (state == State.Patrol)
         {
             // 타겟이 있다면 무조건 카펫 추적도 중단하고 타겟 추적 우선
@@ -104,6 +118,8 @@ public class MonsterCtrl : MonoBehaviour
                 }
                 return; // *** hasTarget일 때 아래 코드 실행 막기 (매우 중요)
             }
+
+            findingSoundDelay = false;
 
             // 항상 타겟 탐색! (카펫이든 순찰이든)
             FindTarget();
@@ -129,10 +145,9 @@ public class MonsterCtrl : MonoBehaviour
         }
         else
         {
-
+            
         }
     }
-
 
     public void HeardSound(Vector3 inputCarpetPos)
     {
@@ -177,6 +192,38 @@ public class MonsterCtrl : MonoBehaviour
                         hasTarget = true;
                     }
                 }
+            }
+        }
+    }
+
+    private void PlayMonsterSound(float distance)
+    {
+        //patrolSoundDelay += Time.deltaTime;
+        //if (patrolSoundDelay > 5f)
+        //{
+        //    AudioManager.Instance.PlayOneSound(patrolSound);
+        //    patrolSoundDelay = 0f;
+        //}
+        
+        //if (hasTarget && !findingSoundDelay)
+        //{
+        //    AudioManager.Instance.PlayOneSound(findingSound);
+        //    findingSoundDelay = true;
+        //}
+
+        if (distance <= 10f)
+        {
+            patrolSoundDelay += Time.deltaTime;
+            if (patrolSoundDelay > 4f)
+            {
+                AudioManager.Instance.PlayOneSound(patrolSound);
+                patrolSoundDelay = 0f;
+            }
+
+            if (hasTarget && !findingSoundDelay)
+            {
+                AudioManager.Instance.PlayOneSound(findingSound);
+                findingSoundDelay = true;
             }
         }
     }

@@ -89,6 +89,8 @@ public class MonsterCtrl : MonoBehaviour
         GameManager.Instance.PopStack();
         PlayerMovement2 pm = target.GetComponent<PlayerMovement2>();
         pm.enabled = true;
+        AudioManager.Instance.BGMAudioSource.Stop();
+        AudioManager.Instance.PlayLobbyBGM();
     }
 
     private void Update()

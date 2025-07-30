@@ -17,11 +17,17 @@ public class GameManager : BaseSingleton<GameManager>
         switch (g.name)
         {
             case "Cat":
-                hasCat = true;
-                break;
+                {
+                    hasCat = true;
+                    print("고양이가 true가 되었다");
+                    break;
+                }
             case "Snake":
-                hasSnake = true;
-                break;
+                {
+                    hasSnake = true;
+                    print("뱀이 true가 되었다");
+                    break;
+                }
             case "Bird":
                 hasBird = true;
                 break;
@@ -39,17 +45,44 @@ public class GameManager : BaseSingleton<GameManager>
     {
         if (currentAnimals.Count > 0)
         {
+            MissAnimal(currentAnimals.Peek().name);
+
             currentAnimals.Peek().gameObject.SetActive(false);
             currentAnimals.Pop();
-            if (currentAnimals.Count <= 0)
-            {
-                print("게임오버");
-            }
+            //if (currentAnimals.Count <= 0)
+            //{
+            //    print("게임오버");
+            //}
         }
         else
         {
             print("게임오버상태");
         }
+    }
+
+    private void MissAnimal(string str)
+    {
+        if (str == "Monkey")
+        {
+            hasMonkey = false;
+            return;
+        }
+        else if (str == "Tiger")
+        {
+            hasTiger = false;
+            return;
+        }
+        else if (str == "Bird")
+        {
+            hasBird = false;
+            return;
+        }
+        else if (str == "Snake")
+        {
+            hasSnake = false;
+            return;
+        }
+        else hasCat = false; // str == "Cat"
     }
 
     protected override void Awake()

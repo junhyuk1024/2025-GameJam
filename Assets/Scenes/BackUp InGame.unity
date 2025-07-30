@@ -464,7 +464,7 @@ Transform:
   m_GameObject: {fileID: 233414776}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.508, z: 0}
+  m_LocalPosition: {x: 0, y: 0.5079999, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -696,7 +696,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 987300f45a3f86647ad6e04d1d9bc39b, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -74.37
+      value: -71.04
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 987300f45a3f86647ad6e04d1d9bc39b, type: 3}
       propertyPath: m_LocalPosition.y
@@ -704,7 +704,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 987300f45a3f86647ad6e04d1d9bc39b, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -12.79655
+      value: -9.33
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 987300f45a3f86647ad6e04d1d9bc39b, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1572,6 +1572,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 9d03a187591b3df4fa1410daadb8ae41, type: 3}
   m_PrefabInstance: {fileID: 581878891}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &728480173 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 987300f45a3f86647ad6e04d1d9bc39b, type: 3}
+  m_PrefabInstance: {fileID: 323623025}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &733663836
 GameObject:
   m_ObjectHideFlags: 0
@@ -1588,7 +1593,7 @@ GameObject:
   - component: {fileID: 733663839}
   m_Layer: 6
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2371,7 +2376,7 @@ SphereCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -2389,7 +2394,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05a99305dd767b6418ca84c800170a4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  promptText: {fileID: 0}
+  promptText: {fileID: 1864143258}
 --- !u!114 &1048383339
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2402,7 +2407,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd62d7f02da3bef4292817e4336945aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetObj: {fileID: 0}
+  targetObj: {fileID: 728480173}
+  interactText: {fileID: 0}
 --- !u!1 &1062690530
 GameObject:
   m_ObjectHideFlags: 0
@@ -4731,7 +4737,7 @@ GameObject:
   - component: {fileID: 1864143259}
   - component: {fileID: 1864143258}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: TextPickup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4785,8 +4791,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 16777215
+  m_fontColor: {r: 1, g: 1, b: 1, a: 0}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -5893,7 +5899,7 @@ SceneRoots:
   - {fileID: 1995482647}
   - {fileID: 357112586}
   - {fileID: 1365177778}
-  - {fileID: 733663838}
   - {fileID: 323623025}
   - {fileID: 47085896}
   - {fileID: 1882060876}
+  - {fileID: 733663838}

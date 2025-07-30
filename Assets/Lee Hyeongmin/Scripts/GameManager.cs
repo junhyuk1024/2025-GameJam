@@ -6,8 +6,32 @@ public class GameManager : BaseSingleton<GameManager>
     public Stack<GameObject> currentAnimals;
     public Transform spawnPoint;
 
+    public bool hasCat;
+    public bool hasSnake;
+    public bool hasBird;
+    public bool hasTiger;
+    public bool hasMonkey;
+
     public void PushStack(GameObject g)
     {
+        switch (g.name)
+        {
+            case "Cat":
+                hasCat = true;
+                break;
+            case "Snake":
+                hasSnake = true;
+                break;
+            case "Bird":
+                hasBird = true;
+                break;
+            case "Tiger":
+                hasTiger = true;
+                break;
+            case "Monkey":
+                hasMonkey = true;
+                break;
+        }
         currentAnimals.Push(g);
     }
 
@@ -35,13 +59,13 @@ public class GameManager : BaseSingleton<GameManager>
         currentAnimals = new Stack<GameObject>();
     }
 
-    //private void Update()
-    //{
-    //    print(currentAnimals.Count);
+    private void Update()
+    {
+        print(currentAnimals.Count);
 
-    //    if (Input.GetKeyDown(KeyCode.E))
-    //    {
-    //        PopStack();
-    //    }
-    //}
+        //if (Input.GetKeyDown(KeyCode.E))
+        //{
+        //    PopStack();
+        //}
+    }
 }

@@ -8,15 +8,14 @@ public class MonsterCtrl : MonoBehaviour
 {
     public enum State
     {
-        Idle,
         Patrol,
-        Trace,
         Attack
     }
 
-    public State state = State.Idle;
+    public State state = State.Patrol;
 
     public Transform target;
+    public Transform targetEyes;
     public LayerMask whatIsTarget;
     public float traceSpeed;
     public float patrolSpeed;
@@ -24,11 +23,12 @@ public class MonsterCtrl : MonoBehaviour
     public float viewAngle;
 
     private NavMeshAgent navMeshAgent;
+    private Animator animator;
     private bool hasTarget;
     //private bool hasSubTarget;
     private float lostTraceTime = 0;
 
-    private float patrolDelay = 3f; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½ 5ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½Ìµï¿½
+    private float patrolDelay = 3f;
     private float patrolTimer = 4.5f;
 
     // ÆÛÇÃ·º½ÃÆ¼
@@ -41,115 +41,98 @@ public class MonsterCtrl : MonoBehaviour
         navMeshAgent = GetComponent<NavMeshAgent>();
         navMeshAgent.speed = traceSpeed;
 
+        animator = GetComponent<Animator>();
+
         hasTarget = false;
-        //hasSubTarget = false;
     }
 
-    //private void Update()
-    //{
-    //    if (hasTarget)
-    //    {
-    //        //hasSubTarget = false;
-    //        isMovingToCarpet = false; // carpet ÃßÀûÀº Ãë¼Ò
-    //        print("Å¸°ÙÀÖÀ½");
-    //        navMeshAgent.SetDestination(target.position);
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.layer == 6)
+        {
+            state = State.Attack;
+            navMeshAgent.enabled = false;
+            animator.SetTrigger("Attack");
 
-    //        float currentDistance = Vector3.Distance(transform.position, target.position);
+            // PlayerMovement2 ÄÄÆ÷³ÍÆ® ºñÈ°¼ºÈ­(¿òÁ÷ÀÓ Â÷´Ü)
+            PlayerMovement2 pm = target.GetComponent<PlayerMovement2>();
+            pm.enabled = false;
 
-    //        if (currentDistance > viewDistance)
-    //        {
-    //            lostTraceTime += Time.deltaTime;
-    //        }
-    //        else
-    //        {
-    //            lostTraceTime = 0f;
-    //        }
+            targetEyes.LookAt(transform.position + Vector3.up * 1.5f);
 
-    //        if (lostTraceTime >= 5f)
-    //        {
-    //            hasTarget = false;
-    //            //navMeshAgent.isStopped = true; // ÀÓ½Ã¿ë, ³ªÁß¿¡ ¹Ù²ã¾ßÇØ
-    //        }
-    //    }
-    //    else
-    //    {
-    //        FindTarget();
-    //        if (isMovingToCarpet)
-    //        {
-    //            // ¼Ò¸® ³­ À§Ä¡·Î ÀÌµ¿
-    //            navMeshAgent.SetDestination(targetCarpetPos);
+            StartCoroutine(AfterAttack());
+        }
+    }
 
-    //            // µµÂø ÆÇÁ¤
-    //            float dist = Vector3.Distance(transform.position, targetCarpetPos);
-    //            if (dist <= carpetArriveThreshold)
-    //            {
-    //                print("Ä«Æê±îÁöÀÌµ¿²ý");
-    //                isMovingToCarpet = false;
-    //                //hasSubTarget = false;
-    //                RandomPatrol(); // ´Ù½Ã ¼øÂû ½ÃÀÛ
-    //            }
-    //        }
-    //        else
-    //        {
-    //            RandomPatrol();
-    //        }
-    //    }
-    //}
+    private IEnumerator AfterAttack()
+    {
+        yield return new WaitForSeconds(1.5f);
+
+        Vector3 playerSpawnPoint = new Vector3(-7f, 2f, 7f);
+        target.position = playerSpawnPoint;
+        target.rotation = Quaternion.identity;
+
+        yield return new WaitForSeconds(0.5f);
+
+        GameManager.Instance.PopStack();
+        PlayerMovement2 pm = target.GetComponent<PlayerMovement2>();
+        pm.enabled = true;
+    }
 
     private void Update()
     {
-        // Å¸°ÙÀÌ ÀÖ´Ù¸é ¹«Á¶°Ç Ä«Æê ÃßÀûµµ Áß´ÜÇÏ°í Å¸°Ù ÃßÀû ¿ì¼±
-        if (hasTarget)
+        if (state == State.Patrol)
         {
-            isMovingToCarpet = false; // ¹Ýµå½Ã ¼Ò¸® ÃßÀû Áß´Ü
-            navMeshAgent.SetDestination(target.position);
+            // Å¸°ÙÀÌ ÀÖ´Ù¸é ¹«Á¶°Ç Ä«Æê ÃßÀûµµ Áß´ÜÇÏ°í Å¸°Ù ÃßÀû ¿ì¼±
+            if (hasTarget)
+            {
+                isMovingToCarpet = false; // ¹Ýµå½Ã ¼Ò¸® ÃßÀû Áß´Ü
+                navMeshAgent.SetDestination(target.position);
 
-            float currentDistance = Vector3.Distance(transform.position, target.position);
-            if (currentDistance > viewDistance)
-            {
-                lostTraceTime += Time.deltaTime;
+                float currentDistance = Vector3.Distance(transform.position, target.position);
+                if (currentDistance > viewDistance)
+                {
+                    lostTraceTime += Time.deltaTime;
+                }
+                else
+                {
+                    lostTraceTime = 0f;
+                }
+                if (lostTraceTime >= 5f)
+                {
+                    hasTarget = false;
+                }
+                return; // *** hasTargetÀÏ ¶§ ¾Æ·¡ ÄÚµå ½ÇÇà ¸·±â (¸Å¿ì Áß¿ä)
             }
-            else
+
+            // Ç×»ó Å¸°Ù Å½»ö! (Ä«ÆêÀÌµç ¼øÂûÀÌµç)
+            FindTarget();
+
+            // ¼Ò¸® ÀÌµ¿
+            if (isMovingToCarpet)
             {
-                lostTraceTime = 0f;
+                navMeshAgent.SetDestination(targetCarpetPos);
+
+                float dist = Vector3.Distance(transform.position, targetCarpetPos);
+                if (dist <= carpetArriveThreshold)
+                {
+                    print("Ä«Æê±îÁöÀÌµ¿²ý");
+                    isMovingToCarpet = false;
+                    RandomPatrol();
+                }
+                // return ºÙ¿©µµ ¹«¹æ
+                return;
             }
-            if (lostTraceTime >= 5f)
-            {
-                hasTarget = false;
-            }
-            return; // *** hasTargetÀÏ ¶§ ¾Æ·¡ ÄÚµå ½ÇÇà ¸·±â (¸Å¿ì Áß¿ä)
+
+            // ±âº» ¼øÂû
+            RandomPatrol();
         }
-
-        // Ç×»ó Å¸°Ù Å½»ö! (Ä«ÆêÀÌµç ¼øÂûÀÌµç)
-        FindTarget();
-
-        // ¼Ò¸® ÀÌµ¿
-        if (isMovingToCarpet)
+        else
         {
-            navMeshAgent.SetDestination(targetCarpetPos);
 
-            float dist = Vector3.Distance(transform.position, targetCarpetPos);
-            if (dist <= carpetArriveThreshold)
-            {
-                print("Ä«Æê±îÁöÀÌµ¿²ý");
-                isMovingToCarpet = false;
-                RandomPatrol();
-            }
-            // return ºÙ¿©µµ ¹«¹æ
-            return;
         }
-
-        // ±âº» ¼øÂû
-        RandomPatrol();
     }
 
-    //private IEnumerator RandomPatrol()
-    //{
-    //    print("ï¿½Ú·ï¿½Æ¾ ï¿½ß»ï¿½");
-    //    Vector3 patrolTargetPosition = GetRandomPointOnNavMesh(transform.position, 10f, NavMesh.AllAreas);
-    //    navMeshAgent.SetDestination(patrolTargetPosition);
-    //    yield return new WaitForSeconds(5f);
-    //}
 
     public void HeardSound(Vector3 inputCarpetPos)
     {
@@ -198,54 +181,17 @@ public class MonsterCtrl : MonoBehaviour
         }
     }
 
-    //private IEnumerator UpdatePath()
-    //{
-    //    while (true)
-    //    {
-    //        yield return new WaitForSeconds(0.2f);
-
-    //        if (hasTarget)
-    //        {
-    //            print("Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½");
-
-    //            navMeshAgent.SetDestination(target.position);
-    //        }
-    //        else // Å¸ï¿½ï¿½ï¿½ï¿½ Ã£ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â¶ï¿½ï¿?
-    //        {
-    //            print("Å¸ï¿½Ù¾ï¿½ï¿½ï¿½");
-    //            Collider[] colliders = Physics.OverlapSphere(transform.position, viewDistance, whatIsTarget);
-    //            foreach (Collider collider in colliders)
-    //            {
-    //                Vector3 direction = (collider.transform.position - transform.position).normalized;
-    //                float distance = Vector3.Distance(transform.position, collider.transform.position);
-    //                if (Physics.Raycast(transform.position, direction, out RaycastHit hit, distance))
-    //                {
-    //                    var hitLayer = hit.collider.gameObject.layer;
-    //                    if (((1 << hitLayer) & whatIsTarget) != 0)
-    //                    {
-    //                        hasTarget = true;
-    //                    }
-    //                }
-    //            }
-    //        }
-    //    }
-    //}
-
-
-    public Vector3 GetRandomPointOnNavMesh(Vector3 center, float distance, int areaMask) // (ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡, ï¿½Ý°ï¿½(ï¿½Å¸ï¿½), ï¿½Ø´ï¿½Ç´ï¿?NevMesh)
+    public Vector3 GetRandomPointOnNavMesh(Vector3 center, float distance, int areaMask)
     {
-        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ý°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ø´ï¿½Ç´ï¿?NavMesh ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½È¯ï¿½ï¿½ï¿½ï¿½
-
-        var randomPos = Random.insideUnitSphere * distance + center;    // centerï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ distanceï¿½ï¿½ ï¿½ï¿½ ï¿½È¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿?ï¿½ï¿½ ï¿½ï¿½Ä¡
+        var randomPos = Random.insideUnitSphere * distance + center;
 
         NavMeshHit hit;
 
-        NavMesh.SamplePosition(randomPos, out hit, distance, areaMask); // (ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡, outï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿? ï¿½Ý°ï¿½(ï¿½Å¸ï¿½), ï¿½ï¿½ï¿½ï¿½ï¿½î¸¶ï¿½ï¿½Å©)  // ï¿½ï¿½ï¿½ï¿½ï¿½î¸¶ï¿½ï¿½Å©ï¿½ï¿½ ï¿½Ø´ï¿½ï¿½Ï´ï¿½ NavMesh ï¿½ß¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ï¿½ï¿½ ï¿½Å¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ý°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿?ï¿½ï¿½ ï¿½Ï³ï¿½ï¿½ï¿½ hitï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+        NavMesh.SamplePosition(randomPos, out hit, distance, areaMask);
 
         return hit.position;
     }
 
-    // È®ï¿½Î¿ï¿½
     public float gizmoRadius = 10f;
     public float gizmoDistance = 10f;
     public float angle = 80f;
@@ -253,15 +199,11 @@ public class MonsterCtrl : MonoBehaviour
     public Color gizmoColor;
     private void OnDrawGizmos()
     {
-        // ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿?
         Gizmos.color = gizmoColor = Color.blue;
         Gizmos.DrawWireSphere(transform.position, gizmoRadius);
 
-        // ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿?
-        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         Vector3 start = transform.position;
 
-        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(Transformï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ Z+ ï¿½ï¿½ï¿½ï¿½)
         float halfAngleInRadius = angle / 2 * Mathf.Deg2Rad;
 
         Vector3 leftDir = transform.rotation * new Vector3(-Mathf.Sin(halfAngleInRadius), 0f, Mathf.Cos(halfAngleInRadius)).normalized;
@@ -269,7 +211,6 @@ public class MonsterCtrl : MonoBehaviour
         Vector3 rightDir = transform.rotation * new Vector3(Mathf.Sin(halfAngleInRadius), 0f, Mathf.Cos(halfAngleInRadius)).normalized;
         Vector3 rightVector = start + (rightDir * gizmoDistance);
 
-        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿?ï¿½×¸ï¿½ï¿½ï¿½
         Gizmos.color = gizmoColor = Color.red;
         Gizmos.DrawLine(start, leftVector);
         Gizmos.DrawLine(start, rightVector);

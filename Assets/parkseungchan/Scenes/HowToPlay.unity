@@ -258,8 +258,8 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 648238803}
-  - {fileID: 952120419}
   - {fileID: 2077309643}
+  - {fileID: 952120419}
   - {fileID: 622501402}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -585,7 +585,7 @@ GameObject:
   - component: {fileID: 952120421}
   - component: {fileID: 952120420}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: Text1 (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

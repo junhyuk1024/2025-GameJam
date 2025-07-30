@@ -6,6 +6,7 @@ public class PlayerMovement2 : MonoBehaviour
     public float playerSpeed = 3f;
     public float playerRotSpeed = 0.25f;
     public Transform playerEyes;
+    public AudioClip[] footsteps;
 
     private CharacterController characterController;
     private PlayerInput playerInput;
@@ -13,37 +14,24 @@ public class PlayerMovement2 : MonoBehaviour
     private float yaw = 0f;
     private float gravity = -9.81f;
     private Vector3 velocity;
+    private float footstepDelay = 0;
 
     private void Awake()
     {
         characterController = GetComponent<CharacterController>();
-        playerInput = GetComponent<PlayerInput>();        
+        playerInput = GetComponent<PlayerInput>();
+
     }
 
     private void Update()
     {
         Move(playerInput.movementInput);
         Rotate(playerInput.lookInput);
+        PlayFootstepSound(playerInput.movementInput);
     }
 
     private void Move(Vector2 movementInput) // movementInput <- w를 누르면 0,1 a를 누르면 -1,0 s를 누르면 0,-1 d를 누르면 1,0
     {
-        //// 이동방향: 현재 회전 기준의 월드방향으로 변환
-        //Vector3 move = transform.right * movementInput.x + transform.forward * movementInput.y;
-        //move *= playerSpeed;
-
-        //// 점프/중력 보정
-        //if (characterController.isGrounded && velocity.y < 0)
-        //{
-        //    velocity.y = -2f; // 바닥에 붙임
-        //}
-
-        //velocity.y += gravity * Time.deltaTime;
-
-        //Vector3 finalVelocity = move + Vector3.up * velocity.y;
-
-        //characterController.Move(finalVelocity * Time.deltaTime);
-
         // 이동방향: 현재 회전 기준의 월드방향으로 변환
         Vector3 move = playerEyes.right * movementInput.x + playerEyes.forward * movementInput.y;
         move *= playerSpeed;
@@ -70,5 +58,24 @@ public class PlayerMovement2 : MonoBehaviour
 
         //transform.rotation = Quaternion.Euler(pitch, yaw, 0f);
         playerEyes.rotation = Quaternion.Euler(pitch, yaw, 0f);
+    }
+
+    private void PlayFootstepSound(Vector2 movementInput)
+    {
+        if (movementInput.sqrMagnitude > 0f)
+        {
+            footstepDelay += Time.deltaTime;
+        }
+        else
+        {
+            footstepDelay = 0f;
+        }
+
+        if (footstepDelay > 0.4f)
+        {
+            int randomValue = Random.Range(0, 3);
+            AudioManager.Instance.PlayOneSound(footsteps[randomValue]);
+            footstepDelay = 0f;
+        }
     }
 }

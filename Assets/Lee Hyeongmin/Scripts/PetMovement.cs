@@ -4,28 +4,17 @@ using UnityEngine.AI;
 public class PetMovement : MonoBehaviour
 {
     public Transform target;
-    public Transform startPosition;
     public float speed = 5f;
-    public float stopDistance = 1.5f;
+    public float stopDistance = 2.5f;
     public float rotSpeed = 1;
 
     private NavMeshAgent navMeshAgent;
-    private GetPet getPet;
-
-    public void Back()
-    {
-        transform.position = startPosition.position;
-        getPet.enabled = true;
-        this.enabled = false;
-    }
 
     private void Awake()
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
         navMeshAgent.speed = speed;
         navMeshAgent.stoppingDistance = stopDistance;
-
-        getPet = GetComponent<GetPet>();
     }
 
     void Update()
@@ -33,7 +22,12 @@ public class PetMovement : MonoBehaviour
         float distance = Vector3.Distance(transform.position, target.position);
         if (distance > 10f)
         {
-            transform.position = target.position;
+            //transform.position = target.position;
+            Vector3 teleportPoint = Utility.GetRandomPointOnNavMesh(target.position, 3f, NavMesh.AllAreas);
+            if (teleportPoint != Vector3.zero && float.IsFinite(teleportPoint.x) && float.IsFinite(teleportPoint.y) && float.IsFinite(teleportPoint.z))
+            {
+                navMeshAgent.Warp(teleportPoint);
+            }
         }
 
         Vector3 dir = target.position - transform.position;

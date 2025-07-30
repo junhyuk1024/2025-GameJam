@@ -3684,6 +3684,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 733663838}
+  startPosition: {fileID: 0}
   speed: 5
   stopDistance: 2.5
   rotSpeed: 1
@@ -3699,7 +3700,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c5a9abae41cc8144943d8edc8a11acc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  petAudioClip: {fileID: 8300000, guid: a1a3b0bf8e288e645bb27ad7b10034a0, type: 3}
 --- !u!1 &480231464
 GameObject:
   m_ObjectHideFlags: 0
@@ -5036,10 +5036,6 @@ MonoBehaviour:
   playerSpeed: 5
   playerRotSpeed: 0.25
   playerEyes: {fileID: 233414777}
-  footsteps:
-  - {fileID: 8300000, guid: 0ece5d912197ae04c9e35fc0630a0fea, type: 3}
-  - {fileID: 8300000, guid: 0d05b7fe82cdc8f47a63ff399e5ce00b, type: 3}
-  - {fileID: 8300000, guid: b7c91422c909dcb4a8d6be5d668a0755, type: 3}
 --- !u!114 &733663840
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8360,6 +8356,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 733663838}
+  startPosition: {fileID: 0}
   speed: 5
   stopDistance: 2.5
   rotSpeed: 1
@@ -8375,7 +8372,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c5a9abae41cc8144943d8edc8a11acc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  petAudioClip: {fileID: 8300000, guid: 1fd0d92d7b48a994a9427ad3b40d91a7, type: 3}
 --- !u!1 &1193036094
 GameObject:
   m_ObjectHideFlags: 0
@@ -10216,6 +10212,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 733663838}
+  startPosition: {fileID: 0}
   speed: 5
   stopDistance: 2.5
   rotSpeed: 1
@@ -10231,7 +10228,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c5a9abae41cc8144943d8edc8a11acc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  petAudioClip: {fileID: 8300000, guid: 01674c6504e0a164c9612a532f7e12c0, type: 3}
 --- !u!195 &1369677397
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -11996,8 +11992,6 @@ MonoBehaviour:
   patrolSpeed: 1
   viewDistance: 10
   viewAngle: 90
-  patrolSound: {fileID: 8300000, guid: c047b5cbae918144f8d0f88908fe379f, type: 3}
-  findingSound: {fileID: 8300000, guid: 0356e2123ba53484992515298de3c956, type: 3}
   gizmoRadius: 10
   gizmoDistance: 10
   angle: 90
@@ -16491,6 +16485,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 733663838}
+  startPosition: {fileID: 0}
   speed: 5
   stopDistance: 2.5
   rotSpeed: 1
@@ -16506,7 +16501,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c5a9abae41cc8144943d8edc8a11acc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  petAudioClip: {fileID: 8300000, guid: bd029fb2bf9789a41b10f387a4dd6c2f, type: 3}
 --- !u!1001 &2015446308
 PrefabInstance:
   m_ObjectHideFlags: 0

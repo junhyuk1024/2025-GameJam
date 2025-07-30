@@ -12,7 +12,9 @@ public class PlayerTeleport : MonoBehaviour
             print("Æ÷Å»ÀÌµ¿");
             CharacterController characterController = other.GetComponent<CharacterController>();
             characterController.enabled = false;
-            other.transform.position = arrivalPoint.position + Vector3.forward;
+            other.transform.position = arrivalPoint.position + arrivalPoint.forward * 2f;
+            //other.transform.rotation = arrivalPoint.rotation;
+            other.transform.rotation = Quaternion.LookRotation(arrivalPoint.forward, Vector3.up);
             characterController.enabled = true;
         }
     }
